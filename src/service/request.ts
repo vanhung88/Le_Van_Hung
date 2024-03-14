@@ -1,6 +1,6 @@
 import axios from 'axios';
 import queryString from 'query-string';
-// import { SERVER_API } from '../constants/configs';
+import Cookies from 'js-cookie';
 
 const request = axios.create({
   baseURL: 'https://frontend-exam.digitalfortress.dev/',
@@ -10,17 +10,26 @@ const request = axios.create({
   paramsSerializer: (params) => queryString.stringify(params),
 });
 
-// request.interceptors.request.use(async config => {
-//   const token = localStorage.getItem('token') ?? null;
-//   if (token) {
-//     config.headers.Authorization = `Bearer ${token}`;
-//     const decodedToken = jwt_decode(token);
-//     const currentDate = new Date();
-//     if (decodedToken.exp * 1000 < currentDate.getTime()) {
-//       localStorage.clear();
-//     }
-//   }
-//   return config;
-// });
+request.interceptors.request.use(async (config) => {
+  const token = Cookies.get('accessToken');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+request.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  async function (error) {
+    if (error.response.status === 401 || error.response.status === 403) {
+      Cookies.remove('accessToken', { path: '' });
+      Cookies.remove('refreshToken', { path: '' });
+      window.location.reload();
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default request;
