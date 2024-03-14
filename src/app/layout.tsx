@@ -2,7 +2,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { ConfigProvider } from 'antd';
+import { ConfigProvider, Switch } from 'antd';
 import { usePathname, useRouter } from 'next/navigation';
 import { Layout, Menu } from 'antd';
 import { Header } from 'antd/es/layout/layout';
@@ -12,6 +12,7 @@ import { ProjectOutlined, RubyOutlined } from '@ant-design/icons';
 import { LOGON_PATH } from '@/constants';
 import { useEffect } from 'react';
 import Cookies from 'js-cookie';
+import { Dropdown } from 'antd';
 
 export default function RootLayout({
   children,
@@ -42,6 +43,7 @@ export default function RootLayout({
       router.push('/');
     }
   }, [router, token]);
+
   return (
     <ConfigProvider>
       <html lang="en">
@@ -50,14 +52,18 @@ export default function RootLayout({
             <div>{children}</div>
           ) : (
             <Layout className="h-screen">
-              <Header style={{ display: 'flex', alignItems: 'center' }}>
+              <Header className="flex justify-center items-center">
                 <div />
                 <Menu
                   theme="dark"
                   mode="horizontal"
                   defaultSelectedKeys={['2']}
-                  style={{ flex: 1, minWidth: 0 }}>
-                  LOGO
+                  style={{ flex: 1, minWidth: 0 }}
+                  className="flex">
+                  <div>
+                    <Switch defaultChecked onChange={() => {}} />
+                    <span className="ml-2">EN/VN</span>
+                  </div>
                 </Menu>
               </Header>
               <Layout>

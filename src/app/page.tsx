@@ -4,6 +4,7 @@ import { Input, Table } from 'antd';
 import { getListProject } from '@/service/apis';
 import { ProjectItem, ProjectList } from '@/type';
 import { SearchOutlined } from '@ant-design/icons';
+import dayjs from 'dayjs';
 
 export const columns = [
   {
@@ -43,6 +44,7 @@ export const columns = [
     title: 'Date Accepted',
     dataIndex: 'last_accessed',
     key: '4',
+    render: (date) => <div>{date ? dayjs(date).format('DD/MM/YYYY') : ''}</div>,
   },
 ];
 

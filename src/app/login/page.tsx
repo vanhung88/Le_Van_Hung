@@ -18,8 +18,8 @@ export default function Login() {
   };
 
   return (
-    <div className=" h-screen flex items-center  justify-center">
-      <div className="w-[500px] p-11 rounded-lg">
+    <div className=" h-screen flex items-center  justify-center bg-[#ECF4FA]">
+      <div className="w-[500px] p-11 rounded-lg bg-white">
         <Form
           name="login"
           initialValues={{ remember: true }}
