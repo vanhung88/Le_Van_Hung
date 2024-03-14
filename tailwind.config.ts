@@ -13,8 +13,8 @@ const config: Config = {
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
-      color: {
-        'primary-color': '',
+      colors: {
+        'primary-color': '#1e84b0',
         'gray-color': '#636366',
         'black-color': '#333333',
       },

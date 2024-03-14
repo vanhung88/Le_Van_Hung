@@ -4,6 +4,12 @@ import './globals.css';
 import { ConfigProvider } from 'antd';
 
 const inter = Inter({ subsets: ['latin'] });
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation';
+import { Layout, Menu } from 'antd';
+import { Header } from 'antd/es/layout/layout';
+import Sider from 'antd/es/layout/Sider';
+import { ProjectOutlined, RubyOutlined } from '@ant-design/icons';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -15,16 +21,49 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const leftSideBar = [
+    {
+      key: '1',
+      icon: <ProjectOutlined />,
+      label: 'Project Management',
+    },
+    {
+      key: '2',
+      icon: <RubyOutlined />,
+      label: 'Profile',
+    },
+  ];
   return (
-    <ConfigProvider
-      theme={{
-        token: {
-          colorPrimary: '#00b96b',
-          colorBgContainer: '#f6ffed',
-        },
-      }}>
+    <ConfigProvider>
       <html lang="en">
-        <body className={inter.className}>{children}</body>
+        <body className={inter.className}>
+          <Layout className="h-screen">
+            <Header style={{ display: 'flex', alignItems: 'center' }}>
+              <div className="demo-logo" />
+              <Menu
+                theme="dark"
+                mode="horizontal"
+                defaultSelectedKeys={['2']}
+                style={{ flex: 1, minWidth: 0 }}></Menu>
+            </Header>
+            <Layout>
+              <Sider width={200}>
+                <Menu
+                  mode="inline"
+                  defaultSelectedKeys={['1']}
+                  defaultOpenKeys={['sub1']}
+                  style={{ height: '100%', borderRight: 0 }}
+                  items={leftSideBar}
+                />
+              </Sider>
+              <Layout className="p-6">
+                <div className="bg-white h-screen p-6 rounded-sm">
+                  {children}
+                </div>
+              </Layout>
+            </Layout>
+          </Layout>
+        </body>
       </html>
     </ConfigProvider>
   );
