@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: 'Inter', sans-serif;
+}
+
+.App {
+  background-image: url('/public/background.png');
+  background-size: cover;
+  width: 100vw;
+  height: 100vh;
+}
