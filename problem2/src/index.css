@@ -12,3 +12,19 @@
   width: 100vw;
   height: 100vh;
 }
+
+.ant-select-selector {
+  background: none !important;
+  border: none !important;
+}
+.ant-select-selection-item {
+  color: white !important;
+}
+
+.ant-select-arrow {
+  color: white !important;
+}
+
+.ant-form-item-explain-error {
+  color: #a60304 !important;
+}
