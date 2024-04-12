@@ -1,28 +1,19 @@
 import { useEffect, useMemo, useState } from 'react';
-import { TokenPriceItem, getAllTokenPrice } from './api/request';
+import { getAllTokenPrice } from './api/tokenPrice';
 import { Button, Form, InputNumber, Select, notification } from 'antd';
 import { handleSwapPrice } from './utils/tool';
-
-export interface InputValue {
-  tokenSend: string;
-  tokenReceive: string;
-  numberSend: string;
-  numberReceive: string;
-}
+import { InputValue, SwapResult, TokenPriceItem } from './types';
 
 function App() {
   const [tokenList, setTokenList] = useState<TokenPriceItem[]>();
   const [form] = Form.useForm();
+  const [api, contextHolder] = notification.useNotification();
+  const [swapResult, setSwapResult] = useState<SwapResult>();
+
   const tokenSend = Form.useWatch('tokenSend', form);
   const tokenReceive = Form.useWatch('tokenReceive', form);
-  const [api, contextHolder] = notification.useNotification();
-
-  const [result, setResult] = useState({
-    tokenSend: '',
-    tokenReceive: '',
-    amountSend: '',
-    amountReceive: '',
-  });
+  const numberReceive = Form.useWatch('numberReceive', form);
+  const numberSend = Form.useWatch('numberSend', form);
 
   const objectByCurrency = useMemo(
     () =>
@@ -37,7 +28,7 @@ function App() {
       ),
     [tokenList]
   );
-  console.log(tokenList);
+
   useEffect(() => {
     (async () => {
       const { data } = await getAllTokenPrice();
@@ -49,10 +40,14 @@ function App() {
     })();
   }, [form]);
 
-  const OptionList = tokenList?.map((token) => ({
-    value: token?.currency,
-    label: token?.currency,
-  }));
+  const OptionList = useMemo(
+    () =>
+      tokenList?.map((token) => ({
+        value: token?.currency,
+        label: token?.currency,
+      })),
+    [tokenList]
+  );
 
   const handleFinish = (values: InputValue) => {
     if (!values?.numberSend && !values?.numberReceive) {
@@ -61,22 +56,24 @@ function App() {
         placement: 'topRight',
       });
     }
-    // calculate
-    const swap: any = handleSwapPrice({
+
+    const swapResponse = handleSwapPrice({
       ...values,
       tokenSend: objectByCurrency?.[values?.tokenSend],
       tokenReceive: objectByCurrency?.[values?.tokenReceive],
     });
-    setResult(swap);
+    setSwapResult(swapResponse);
   };
-  console.log(result);
+
   return (
     <div className="App flex items-center justify-center">
-      <div className="relative bg-[#0000009e] p-4 w-[500px] text-white border-solid border-2 border-white rounded-xl">
-        <div className="font-semibold text-2xl mb-4 text-center">Swap</div>
+      <div className="relative bg-[#0000009e] px-6 py-8 w-[500px] border-solid border-2 border-[#ffffff47] rounded-2xl">
+        <div className="font-semibold text-2xl mb-6 text-center text-white">
+          Swap Currency
+        </div>
         {contextHolder}
         <Form form={form} onFinish={handleFinish}>
-          <div className="bg-[#ffffff69] p-6 rounded-md flex justify-between mb-4">
+          <div className="bg-[#ffffff69] p-6 rounded-md flex justify-between mb-3">
             <div className="flex">
               <img src={`/icons/${tokenSend}.svg`} alt={tokenSend} />
               <Form.Item name="tokenSend" className="m-0">
@@ -84,11 +81,14 @@ function App() {
               </Form.Item>
             </div>
             <Form.Item className="m-0" name="numberSend">
-              <InputNumber placeholder="0.00" className="w-32" />
+              <InputNumber
+                disabled={numberReceive}
+                placeholder="0.00"
+                className="w-32"
+              />
             </Form.Item>
           </div>
-
-          <div className="bg-white w-10 h-10 rounded-full  absolute right-[50%] top-[132px] transform translate-x-[50%]">
+          <div className="bg-white w-10 h-10 rounded-full  absolute right-[50%] top-[153px] transform translate-x-[50%]">
             <img className="p-2" src="/icons/swap.svg" alt="swap" />
           </div>
 
@@ -100,21 +100,28 @@ function App() {
               </Form.Item>
             </div>
             <Form.Item className="m-0" name="numberReceive">
-              <InputNumber placeholder="0.00" className="w-32" />
+              <InputNumber
+                disabled={numberSend}
+                placeholder="0.00"
+                className="w-32"
+              />
             </Form.Item>
           </div>
 
-          <Form.Item className="flex justify-center">
+          {swapResult?.amountSend && (
+            <div className="text-white p-2 flex justify-center border-solid border-y-[1px] border-[#ffffff47] mt-6">
+              {swapResult?.amountSend} {tokenSend} = {swapResult?.amountReceive}{' '}
+              {tokenReceive}
+            </div>
+          )}
+
+          <Form.Item className="flex justify-center mb-0">
             <Button
               htmlType="submit"
-              className="mt-10 font-medium p-5 flex items-center">
-              CONFIRM SWAP
+              className="mt-10 font-medium px-10 py-5 flex items-center">
+              Confirm Swap
             </Button>
           </Form.Item>
-          <div className="bg-[#e5e7e8] p-4 rounded-md flex justify-between mt-4">
-            {result?.amountSend} {result?.tokenSend} = {result?.amountReceive}{' '}
-            {result?.tokenReceive}
-          </div>
         </Form>
       </div>
     </div>

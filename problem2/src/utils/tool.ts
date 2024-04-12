@@ -1,22 +1,39 @@
-import { InputValue } from '../App';
+import { TokenPriceItem } from '../types';
 
 export const handleSwapPrice = ({
   tokenSend,
   tokenReceive,
   numberSend,
   numberReceive,
-}: any) => {
+}: {
+  tokenSend?: TokenPriceItem;
+  tokenReceive?: TokenPriceItem;
+  numberSend?: number;
+  numberReceive?: number;
+}) => {
+  const getPriceRatio = (priceA: number, priceB: number): number => {
+    return priceB !== 0 ? priceA / priceB : 0;
+  };
+
   if (numberSend) {
-    const cal = Number(tokenSend?.price) / Number(tokenReceive?.price);
-    const result = numberSend * cal;
+    const amountReceiveCal =
+      numberSend *
+      getPriceRatio(Number(tokenSend?.price), Number(tokenReceive?.price));
     return {
       amountSend: numberSend,
-      tokenSend: tokenSend?.currency,
-      amountReceive: result,
-      tokenReceive: tokenReceive?.currency,
+      amountReceive: amountReceiveCal,
     };
   }
 
-  //   if(numberReceive)
-  return {};
+  if (numberReceive) {
+    const amountSendCal =
+      numberReceive *
+      getPriceRatio(Number(tokenReceive?.price), Number(tokenSend?.price));
+
+    return {
+      amountSend: amountSendCal,
+      amountReceive: numberReceive,
+    };
+  }
+  return undefined;
 };

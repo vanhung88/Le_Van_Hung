@@ -1,10 +1,5 @@
 import axios from 'axios';
-
-export interface TokenPriceItem {
-  currency: string;
-  date: string;
-  price: string;
-}
+import { TokenPriceItem } from '../types';
 
 const request = axios.create({
   baseURL: 'https://interview.switcheo.com/',
