@@ -40,14 +40,10 @@ function App() {
     })();
   }, [form]);
 
-  const OptionList = useMemo(
-    () =>
-      tokenList?.map((token) => ({
-        value: token?.currency,
-        label: token?.currency,
-      })),
-    [tokenList]
-  );
+  const OptionList = tokenList?.map((token) => ({
+    value: token?.currency,
+    label: token?.currency,
+  }));
 
   const handleFinish = (values: InputValue) => {
     if (!values?.numberSend && !values?.numberReceive) {
